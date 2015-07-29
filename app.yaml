@@ -1,0 +1,32 @@
+application: YOUR_APP_NAME
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: yes
+
+handlers:
+#endpoint handlers
+- url: /_ah/spi/.*
+  script: roomba.APPLICATION
+
+- url: /favicon\.ico
+  static_files: favicon.ico
+  upload: favicon\.ico
+
+- url: /static
+  static_dir: static
+
+- url: /.*
+  script: main.app
+  login: admin
+  secure: always
+
+libraries:
+- name: webapp2
+  version: "2.5.2"
+- name: endpoints
+  version: 1.0
+- name: jinja2
+  version: latest
+- name: pycrypto
+  version: latest

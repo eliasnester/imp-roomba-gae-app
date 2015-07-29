@@ -1,0 +1,29 @@
+{% extends "templates/base.html" %}
+{% block title %} Roomba Settings Page {% endblock %}
+{% block header_title %}Roomba Settings pannel{% endblock %}
+{% block message %}
+        <div>
+          <div class="alert alert-danger alert-dismissible" role="alert" style="display: {%  if not error %} none {% endif %}" id="error">{{ error }}</div>
+          <div class="alert alert-info alert-dismissible" role="alert" style="display: {%  if not info %} none {% endif %} " id="info">{{ info }}</div>
+        </div>
+{% endblock %}
+{% block body %}
+        <div>
+          <p class="text-left">Change settings:</p>
+          <form method="post" action="/settings">
+            <div class="form-group">
+              <label class="control-label pull-left">Agent URL</label>
+              <div class="controls">
+                <input type="text" class="form-control" name="agent_url" {% if agent_url %} value="{{ agent_url }}" {% endif %}>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="control-label pull-left">Device Mac Adderess</label>
+              <div class="controls">
+                <input type="text" class="form-control" name="device_mac" {% if device_mac %} value="{{ device_mac }}" {% endif %}>
+              </div>
+            </div>
+            <button class="btn btn-primary" type="submit">Submit</button>
+          </form>
+        </div>
+{% endblock %}

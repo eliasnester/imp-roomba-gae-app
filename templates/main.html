@@ -1,0 +1,38 @@
+{% extends "templates/base.html" %}
+{% block title %} Roomba Main Page {% endblock %}
+{% block scripts %}
+  <!-- Load endpoints js api -->
+  <script>
+      function main() {
+          //google.appengine.roomba.init('//' + window.location.host + '/_ah/api'); 
+          init(window.location.protocol + '//' + window.location.host + '/_ah/api'); 
+      }
+  </script>
+  <script src="https://apis.google.com/js/client.js?onload=main"></script>
+{% endblock %}
+{% block header_title %}Roomba controll pannel{% endblock %}
+{% block message %}
+  <div>
+    <div class="alert alert-danger alert-dismissible" role="alert" style="display: none;" id="error"></div>
+    <div class="alert alert-info alert-dismissible" role="alert" style="display: none;" id="info">Waiting server response</div>
+  </div>
+{% endblock %}
+{% block body %}
+  <section>
+    <div>Charging state: <span id="charging_state"></span></div>
+    <div>Docking state: <span id="docking_state"></span></div>
+    <div>Running command: <span id="running_command"></span></div>
+    <div> Battery ramaining: <span id="battery_remaining"></span></div>
+    <br/>
+    <div class="progress">
+      <div class="progress-bar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="progress_bar"></div>
+    </div>
+  </section>
+  <div class="container custom">
+    <h3>Send command:</h3>
+    <p class="text-center"><a class="btn btn-block text-center btn-primary btn-lg" disabled="disabled" id="clean">Clean</a></p>
+    <p class="text-center"><a class="btn btn-block text-center btn-primary btn-lg" disabled="disabled" id="sleep">Stop</a></p>
+    <p class="text-center"><a class="btn btn-block text-center btn-primary btn-lg" disabled="disabled" id="doc">Doc</a></p>
+    <p class="text-center"><a class="btn btn-block text-center btn-primary btn-lg" disabled="disabled" id="status">Status</a></p>
+  </div>
+{% endblock %}
