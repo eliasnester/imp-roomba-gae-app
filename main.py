@@ -16,6 +16,7 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     extensions=['jinja2.ext.autoescape'],
     autoescape=True)
 
+
 class MainHandler(webapp2.RequestHandler):
 
     def get(self):
@@ -25,14 +26,14 @@ class MainHandler(webapp2.RequestHandler):
 
         if user:
 
-            logging.info("Current user: %s with id: %s" %(user, user.user_id()))
-            template_values = {'user': user.nickname()
-                              }
+            logging.info("Current user: %s with id: %s" % (user, user.user_id()))
+            template_values = {'user': user.nickname()}
             template = JINJA_ENVIRONMENT.get_template(os.path.join('templates', 'main.html'))
             self.response.write(template.render(template_values))
 
         else:
             self.redirect(users.create_login_url(self.request.uri))
+
 
 class SettingsHandler(webapp2.RequestHandler):
 
@@ -55,30 +56,30 @@ class SettingsHandler(webapp2.RequestHandler):
                 error = message["error"] if "error" in message else ""
 
             # prepeare default template values
-            template_values = { 'user': user.nickname(),
-                                'agent_url': "",
-                                'device_mac': "",
-                                'info': info,
-                                'error': error
-                                }
+            template_values = {'user': user.nickname(),
+                               'agent_url': "",
+                               'device_mac': "",
+                               'info': info,
+                               'error': error
+                               }
 
             account = AccountSettingsHelper()
-            user_id = user.user_id() 
-            logging.info("Current user: %s with id: %s" %(user, user.user_id()))
+            user_id = user.user_id()
+            logging.info("Current user: %s with id: %s" % (user, user.user_id()))
             # check if user is already in DB, otehrwise add it
             if not account.user_exists(user_id):
-                logging.info("User account doesn't exist for id %s" %user_id)
-                try: 
+                logging.info("User account doesn't exist for id %s" % user_id)
+                try:
                     account.add_new_user(user_id)
                 except Exception, e:
-                    logging.exception("Exception %s happened" %e)
+                    logging.exception("Exception %s happened" % e)
             else:
-                # if user exists get values form DB 
+                # if user exists get values form DB
                 usr = account.get_user_info(user_id)
                 template_values['agent_url'] = usr.agent_url
-                template_values['device_mac'] =  usr.device_mac
+                template_values['device_mac'] = usr.device_mac
 
-            logging.info("Generating template using values: %s" %template_values)
+            logging.info("Generating template using values: %s" % template_values)
 
             template = JINJA_ENVIRONMENT.get_template(os.path.join('templates', 'settings.html'))
             self.response.write(template.render(template_values))
@@ -92,8 +93,9 @@ class SettingsHandler(webapp2.RequestHandler):
         user = users.get_current_user()
 
         if user:
-            logging.info(" Processing POST. Got data: agent: %s mac: %s" %(self.request.get('agent_url'), self.request.get('device_mac')))
-            logging.info("Is user admin: %s" %users.is_current_user_admin())
+            logging.info(" Processing POST. Got data: agent: %s mac: %s" % (
+                self.request.get('agent_url'), self.request.get('device_mac')))
+            logging.info("Is user admin: %s" % users.is_current_user_admin())
             account = AccountSettingsHelper()
             user_id = user.user_id()
             agent_url = self.request.get('agent_url')
@@ -101,14 +103,14 @@ class SettingsHandler(webapp2.RequestHandler):
             #TODO: data validation for  agent_url and device_mac values
 
             try:
-                res = account.update_device_information(user_id, agent_url, device_mac )
+                res = account.update_device_information(user_id, agent_url, device_mac)
             except Exception, e:
-                    logging.exception("Exception %s happened" %e)
-            
+                    logging.exception("Exception %s happened" % e)
+
             if res:
-                # redirect with success message 
+                # redirect with success message
                 logging.info("Redirecting to settings")
-                self.response.set_cookie("message", json.dumps({"info": "Success"}));
+                self.response.set_cookie("message", json.dumps({"info": "Success"}))
                 self.redirect("/settings")
             else:
                 # TODO: redrect with error message
@@ -116,7 +118,6 @@ class SettingsHandler(webapp2.RequestHandler):
 
         else:
             self.redirect(users.create_login_url(self.request.uri))
-
 
 
 app = webapp2.WSGIApplication([

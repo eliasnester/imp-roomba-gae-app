@@ -20,7 +20,7 @@ class AccountSettingsHelper():
     """
 
     def add_new_user(self, user_id):
-        usr = AccountSettings(key = ndb.Key(AccountSettings, user_id))
+        usr = AccountSettings(key=ndb.Key(AccountSettings, user_id))
         usr.userid = user_id
         usr.put()
 
@@ -36,7 +36,7 @@ class AccountSettingsHelper():
         else:
             return False
 
-    def update_device_information(self, user_id, agent_url = None, device_mac = None):
+    def update_device_information(self, user_id, agent_url=None, device_mac=None):
         """ update agent url and/or device_mac """
 
         if self.user_exists(user_id):
@@ -61,5 +61,4 @@ class AccountSettingsHelper():
             usr = usr_key.get()
             return usr
         else:
-            logging.error("User %s doesn't exist in db" %user_id)
-
+            logging.error("User %s doesn't exist in db" % user_id)

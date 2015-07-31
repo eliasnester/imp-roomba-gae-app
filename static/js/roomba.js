@@ -4,17 +4,22 @@ var MESSAGE_ERROR = 'error';
 var WEB_CLIENT_ID = 'YOUR_WEB_CLIENT_ID';
 var SCOPES = 'https://www.googleapis.com/auth/userinfo.email';
 
+var messageType = {
+    info: "#info",
+    error: "#error"
+  };
+
 // charging states:
-chargingStates = {
-  0:"Not Charging",
-  1:"Charging Recovery",
-  2:"Charging",
-  3:"Trickle Charging",
-  4:"Waiting",
-  5:"Charging Error"
+var chargingStates = {
+  0: "Not Charging",
+  1: "Charging Recovery",
+  2: "Charging",
+  3: "Trickle Charging",
+  4: "Waiting",
+  5: "Charging Error"
 };
 
-roomba_buttons = [
+var roomba_buttons = [
   '#clean',
   '#sleep',
   '#doc',
@@ -23,16 +28,15 @@ roomba_buttons = [
 
 var signedIn = false;
 
-enableButtons = function(buttons){
+function enableButtons(buttons) {
 
   for (var i = 0; i < buttons.length; i++){
     $(buttons[i]).attr({'disabled': false});
     $(buttons[i]).click(buttonClickHandler);
   }
-};
+}
 
-
-getStatus = function(){
+function getStatus(){
 
   displayMessage("Requesting data from server...", MESSAGE_INFO);
   gapi.client.roomba_api.cmd.sendCommand({'command': 'status'}).execute(function(resp) {
@@ -58,15 +62,15 @@ getStatus = function(){
       }
     }
   });
-};
+}
 
-buttonClickHandler = function(){
+function buttonClickHandler(){
 
     sendRoombaCommand(this.id);
     $(this).attr({disabled: true});
-};
+}
 
-sendRoombaCommand = function(cmd){
+function sendRoombaCommand(cmd){
 
   hideMessage(MESSAGE_ERROR);
   displayMessage("Sending command: " + cmd , MESSAGE_INFO);
@@ -81,36 +85,43 @@ sendRoombaCommand = function(cmd){
         if (resp.result.result === 'RESULT_ERROR'){
               displayMessage(resp.error_message + ' ' + resp.command, MESSAGE_ERROR);
         } else {
-            //TODO: show confirmation and hide it in few seconds or just update status again based on received data
+            displayMessage('Command executed successfully', MESSAGE_INFO, true);
+            // TODO: update device state information with info received  from response
+            // need to add this functionality to imp first
         }
       }
     });
   } else if (cmd === 'status') {
     getStatus();
   }
-};
+}
 
-displayMessage = function(message, type){
+function displayMessage(message, type, autoclose, timeout){
 
-  if (type === MESSAGE_INFO){
-    $('#info').html(message);
-    $('#info').show();
-  } else if (type === MESSAGE_ERROR) {
-    $('#error').html(message);
-    $('#error').show();
+  autoclose = autoclose || false;
+  timeout = timeout || 2000;
+
+  $(messageType[type]).html(message);
+  $(messageType[type]).show();
+
+  if (autoclose){
+    window.setTimeout(function() { hideMessage(type); }, timeout);
   }
-};
 
-hideMessage = function(type){
+}
 
-  if (type === 'info'){
-    $('#info').hide();
-  } else if (type === 'error') {
-    $('#error').hide();
-  }
-};
+function hideMessage(type){
 
-updateProgressBar = function(value){
+  $(messageType[type]).hide();
+
+  // if (type === 'info'){
+  //   $('#info').hide();
+  // } else if (type === 'error') {
+  //   $('#error').hide();
+  // }
+}
+
+function updateProgressBar(value){
 
   if (value > 70){
     document.getElementById("progress_bar").className = 'progress-bar progress-bar-success';
@@ -120,9 +131,9 @@ updateProgressBar = function(value){
     document.getElementById("progress_bar").className = 'progress-bar progress-bar-danger';
   }
   $('#progress_bar').css('width', value+'%').attr('aria-valuenow', value);
-};
+}
 
-userAuthed = function(){
+function userAuthed(){
 
   var request = gapi.client.oauth2.userinfo.get().execute(function(resp) {
     if (!resp.code) {
@@ -135,18 +146,18 @@ userAuthed = function(){
       signin(false, userAuthed);
     }
   });
-};
+}
 
-signin = function(mode, callback) {
+function signin(mode, callback) {
 
   gapi.auth.authorize ( {
       client_id:  WEB_CLIENT_ID,
       scope:  SCOPES, immediate: mode
     },
     callback);
-};
+}
 
-init = function(apiRoot) {
+function init(apiRoot) {
 
   // Loads the OAuth and helloworld APIs asynchronously, and triggers login
   // when they have completed.
@@ -160,4 +171,4 @@ init = function(apiRoot) {
   apisToLoad = 2; // must match number of calls to gapi.client.load()
   gapi.client.load('roomba_api', 'v1', callback, apiRoot);
   gapi.client.load('oauth2', 'v2', callback);
-};
+}
