@@ -114,11 +114,6 @@ function hideMessage(type){
 
   $(messageType[type]).hide();
 
-  // if (type === 'info'){
-  //   $('#info').hide();
-  // } else if (type === 'error') {
-  //   $('#error').hide();
-  // }
 }
 
 function updateProgressBar(value){
