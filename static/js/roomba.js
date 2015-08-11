@@ -120,7 +120,7 @@ function updateProgressBar(value){
 
   if (value > 70){
     document.getElementById("progress_bar").className = 'progress-bar progress-bar-success';
-  } else if (value > 40 & value < 70 ) {
+  } else if (value >= 40 & value <= 70 ) {
     document.getElementById("progress_bar").className = 'progress-bar progress-bar-warning';
   } else if (value < 40) {
     document.getElementById("progress_bar").className = 'progress-bar progress-bar-danger';
