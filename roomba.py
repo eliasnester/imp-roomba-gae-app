@@ -55,9 +55,9 @@ class RoombaApi(remote.Service):
         # Checks for active Google account session
 
         user = endpoints.get_current_user()
-        logging.info("Current user: %s with id: %s" % (user, user.user_id()))
 
         if user:
+            logging.info("Current user: %s with id: %s" % (user, user.user_id()))
             account = AccountSettingsHelper()
             user_id = user.user_id()
 
